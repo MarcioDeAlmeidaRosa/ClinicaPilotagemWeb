@@ -18,6 +18,9 @@ namespace ClinicaPilotagemWeb.Controllers
     [Authorize]
     public class AccountController : Controller
     {
+        //TODO - VERIFICAR
+        private const int APLICATION = 1;/*app clinica de pilotagem*/
+
         private ApplicationSignInManager _signInManager;
         private ApplicationUserManager _userManager;
 
@@ -154,10 +157,8 @@ namespace ClinicaPilotagemWeb.Controllers
         {
             if (ModelState.IsValid)
             {
-                var user = new { UserName = model.Email, Email = model.Email , Senha = model.Password, Aplication = 1/*app clinica de pilotagem*/ };
-                //TODO - CHAMAR INTEGRAÇÃO PARA GRAVA REGISTRO DE USUÁRIO
+                var user = new { UserName = model.Email, Email = model.Email, Password = model.Password, Aplication = APLICATION };
 
-                //You should have a look at the HttpClient
                 // HTTP POST
                 //https://sites.google.com/site/wcfpandu/web-api/calling-a-web-api-from-c-and-calling-a-web-api-from-view
                 using (var client = new HttpClient())
@@ -174,23 +175,8 @@ namespace ClinicaPilotagemWeb.Controllers
                         ViewBag.CadastradoSucesso = "Confirmar o cadastro via e-mail.";
                     }
                 }
-                #region removido
-                //var result = await UserManager.CreateAsync(user, model.Password);
-                //if (result.Succeeded)
-                //{
-                //await SignInManager.SignInAsync(user, isPersistent: false, rememberBrowser: false);
-
-                //// For more information on how to enable account confirmation and password reset please visit https://go.microsoft.com/fwlink/?LinkID=320771
-                //// Send an email with this link
-                //string code = await UserManager.GenerateEmailConfirmationTokenAsync(user.Id);
-                //var callbackUrl = Url.Action("ConfirmEmail", "Account", new { userId = user.Id, code = code }, protocol: Request.Url.Scheme);
-                //await UserManager.SendEmailAsync(user.Id, "Confirm your account", "Please confirm your account by clicking <a href=\"" + callbackUrl + "\">here</a>");
-
-                //return RedirectToAction("Index", "Home");
-                //}
-                //AddErrors(result);
-                #endregion
             }
+            //TODO - TRATAR O ELSE
 
             // If we got this far, something failed, redisplay form
             return View(model);
@@ -352,17 +338,56 @@ namespace ClinicaPilotagemWeb.Controllers
                 return RedirectToAction("Login");
             }
 
-            // Sign in the user with this external login provider if the user already has a login
-            var result = await SignInManager.ExternalSignInAsync(loginInfo, isPersistent: false);
-            switch (result)
+            StatusLogin status = StatusLogin.Failure;
+
+            if (loginInfo.ExternalIdentity.IsAuthenticated)
             {
-                case SignInStatus.Success:
+                var user = new
+                {
+                    UserName = loginInfo.ExternalIdentity.Name,
+                    Aplication = APLICATION,
+                    Providers = new[]
+                    {
+                        new
+                        {
+                            Login = loginInfo.Login.LoginProvider,
+                            Key = loginInfo.Login.ProviderKey
+                        }
+                    }
+                };
+                
+                // HTTP POST
+                //https://sites.google.com/site/wcfpandu/web-api/calling-a-web-api-from-c-and-calling-a-web-api-from-view
+                using (var client = new HttpClient())
+                {
+                    client.BaseAddress = new Uri(ConfigurationManager.AppSettings["url-api-client"]);
+                    client.DefaultRequestHeaders.Accept.Clear();
+                    client.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue("application/json"));
+                    // HTTP POST
+                    HttpResponseMessage response = await client.PostAsJsonAsync("api/Autentication/LoginExternalAuthentication", user);
+                    if (response.IsSuccessStatusCode)
+                    {
+                        ResultAutentication userAutentication = await response.Content.ReadAsAsync<ResultAutentication>();
+                        //TODO - TRATA VALOR DO RETORNO
+                        status = userAutentication.StatusLogin;
+                    }
+                }
+            }
+            //TODO - TRATAR ELSE
+
+            // Sign in the user with this external login provider if the user already has a login
+            //var result = await SignInManager.ExternalSignInAsync(loginInfo, isPersistent: false);
+
+            switch (status)
+            {
+                //TODO - VALIDAR SITUAÇÕES
+                case StatusLogin.Success:
                     return RedirectToLocal(returnUrl);
-                case SignInStatus.LockedOut:
+                case StatusLogin.LockedOut:
                     return View("Lockout");
-                case SignInStatus.RequiresVerification:
+                case StatusLogin.RequiresVerification:
                     return RedirectToAction("SendCode", new { ReturnUrl = returnUrl, RememberMe = false });
-                case SignInStatus.Failure:
+                case StatusLogin.Failure:
                 default:
                     // If the user does not have an account, then prompt the user to create an account
                     ViewBag.ReturnUrl = returnUrl;
@@ -391,7 +416,41 @@ namespace ClinicaPilotagemWeb.Controllers
                 {
                     return View("ExternalLoginFailure");
                 }
-                var user = new UserModel { UserName = model.Email, Email = model.Email };
+                //TODO - VER NECESSIDADE
+                var user = new UserModel { UserName = info.ExternalIdentity.Name, Email = model.Email };
+
+                var userLink = new { Email = model.Email,
+                    Aplication = APLICATION, 
+                    Provider = new
+                    {
+                        Login = info.Login.LoginProvider,
+                        Key = info.Login.ProviderKey
+                    }
+                };
+
+                // HTTP POST
+                //https://sites.google.com/site/wcfpandu/web-api/calling-a-web-api-from-c-and-calling-a-web-api-from-view
+                using (var client = new HttpClient())
+                {
+                    client.BaseAddress = new Uri(ConfigurationManager.AppSettings["url-api-client"]);
+                    client.DefaultRequestHeaders.Accept.Clear();
+                    client.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue("application/json"));
+                    // HTTP POST
+                    HttpResponseMessage response = await client.PostAsJsonAsync("api/Autentication/LinkExternalAuthentication", userLink);
+                    if (response.IsSuccessStatusCode)
+                    {
+                        ResultAutentication userAutentication = await response.Content.ReadAsAsync<ResultAutentication>();
+                        //TODO - TRATA VALOR DO RETORNO
+                        //status = userAutentication.StatusLogin;
+                        //TODO - REGISTRAR USUÁRIO COMO LOGADO
+                        //Registrado com sucesso.
+                        //retornar para tela de registro solicitando a confirmação do registro pelo e-mail
+                        ViewBag.CadastradoSucesso = "Confirmar o cadastro via e-mail.";
+                    }
+                }
+
+
+                //TODO - COLOCAR USUÁRIO COMO NA SESSÃO E ENVIAR PARA A TELA DE LOGADO
                 var result = await UserManager.CreateAsync(user);
                 if (result.Succeeded)
                 {
