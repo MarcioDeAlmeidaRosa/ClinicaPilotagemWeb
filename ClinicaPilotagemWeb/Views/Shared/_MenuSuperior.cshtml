@@ -1,0 +1,38 @@
+﻿@using ClinicaPilotagemWeb.Resources
+@{
+    Layout = null;
+}
+<div class="container">
+    <div class="navbar-header">
+        <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse">
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+        </button>
+        @Html.ActionLink(Language.NameApp, "Index", "Home", new { area = "" }, new { @class = "navbar-brand" })
+    </div>
+    <div class="navbar-collapse collapse">
+        <ul class="nav navbar-nav">
+            <li>@Html.ActionLink(Language.Home, "Index", "Home")</li>
+            <li>@Html.ActionLink(Language.About, "About", "Home")</li>
+            <li>@Html.ActionLink(Language.Contact, "Contact", "Home")</li>
+        </ul>
+        <p class="navbar-text pull-right">
+            @if (Session["UsuarioLogado"] != null)
+            {
+                @Language.WellCome
+                @Session["UsuarioLogado"]
+                @Html.ActionLink(Language.SignOut, "Logout", "Autentication")
+            }
+            else {
+                @Language.WellCome@:&nbsp;
+                @Language.Visitor@:&nbsp;
+                @Html.ActionLink(Language.SignIn, "Login", "Autentication")
+                @:&nbsp;
+                @Language.Or
+                @:&nbsp;
+                @Html.ActionLink(Language.SignUp, "Register", "Autentication")
+            }
+        </p>
+    </div>
+</div>

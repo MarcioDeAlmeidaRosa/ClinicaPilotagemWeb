@@ -5,7 +5,7 @@
     <ProductVersion>
     </ProductVersion>
     <SchemaVersion>2.0</SchemaVersion>
-    <ProjectGuid>{AE4372FA-848B-42B6-8F4E-748D83756152}</ProjectGuid>
+    <ProjectGuid>{6045074F-AE10-4B83-AB3F-FE7D71A6ED16}</ProjectGuid>
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
     <RootNamespace>ClinicaPilotagemWeb.Tests</RootNamespace>
@@ -92,7 +92,7 @@
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\ClinicaPilotagemWeb\ClinicaPilotagemWeb.csproj">
-      <Project>{180B5DC4-787D-49A5-AEA0-8C792585062A}</Project>
+      <Project>{3AE2B3B0-DA88-4EC4-8007-64D63F986345}</Project>
       <Name>ClinicaPilotagemWeb</Name>
     </ProjectReference>
   </ItemGroup>

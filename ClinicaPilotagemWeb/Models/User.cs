@@ -1,11 +1,18 @@
-﻿namespace ClinicaPilotagemWeb.Models
+﻿using System;
+using System.ComponentModel.DataAnnotations;
+
+namespace ClinicaPilotagemWeb.Models
 {
     public class User
     {
-        public string UserName { get; set; }
-        public string Email { get; set; }
-        public bool WaitingConfirmation { get; set; }
-        public bool Blocked { get; set; }
-        public int Aplication { get; set; }
+        [Display(Name = "Email", ResourceType = typeof(Resources.Language))]
+        [Required(ErrorMessageResourceType = typeof(Resources.Language),
+            ErrorMessageResourceName = "EnterYourEmail")]
+        public String Email { get; set; }
+
+        [Display(Name = "Password", ResourceType = typeof(Resources.Language))]
+        [Required(ErrorMessageResourceType = typeof(Resources.Language),
+            ErrorMessageResourceName = "EnterYourPassword")]
+        public String Password { get; set; }
     }
 }

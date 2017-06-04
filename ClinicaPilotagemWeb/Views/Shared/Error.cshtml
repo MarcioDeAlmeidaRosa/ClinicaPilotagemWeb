@@ -1,9 +1,15 @@
-﻿@model System.Web.Mvc.HandleErrorInfo
-
-@{
-    ViewBag.Title = "Error";
-}
-
-<h1 class="text-danger">Error.</h1>
-<h2 class="text-danger">An error occurred while processing your request.</h2>
-
+﻿@using ClinicaPilotagemWeb.Resources
+<!DOCTYPE html>
+<html>
+<head>
+    <meta name="viewport" c
+          ontent="width=device-width" />
+    <title>@Language.Error</title>
+</head>
+<body>
+    <hgroup>
+        <h1>@Language.Error@:.</h1>
+        <h2>@Language.GenerecErrorMessage@:.</h2>
+    </hgroup>
+</body>
+</html>
