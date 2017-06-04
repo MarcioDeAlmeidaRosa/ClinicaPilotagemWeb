@@ -17,10 +17,6 @@
         //
         // Summary:
         //     Sign in failed
-        Failure = 3,
-        //
-        // Summary:
-        //     Sign in was successful - create person
-        NewUser = 3,
+        Failure = 3
     }
 }

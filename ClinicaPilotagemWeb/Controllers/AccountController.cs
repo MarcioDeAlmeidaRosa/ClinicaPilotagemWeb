@@ -12,6 +12,7 @@ using ClinicaPilotagemWeb.Models;
 using System.Net.Http;
 using System.Net.Http.Headers;
 using System.Configuration;
+using System.Web.Security;
 
 namespace ClinicaPilotagemWeb.Controllers
 {
@@ -20,6 +21,7 @@ namespace ClinicaPilotagemWeb.Controllers
     {
         //TODO - VERIFICAR
         private const int APLICATION = 1;/*app clinica de pilotagem*/
+        private string TOKEN = string.Empty;
 
         private ApplicationSignInManager _signInManager;
         private ApplicationUserManager _userManager;
@@ -75,22 +77,52 @@ namespace ClinicaPilotagemWeb.Controllers
         public async Task<ActionResult> Login(LoginViewModel model, string returnUrl)
         {
             if (!ModelState.IsValid)
-            {
                 return View(model);
+
+            StatusLogin status = StatusLogin.Failure;
+            ResultAutentication userAutentication = null;
+
+            var user = new { Email = model.Email, Password = model.Password, Aplication = APLICATION };
+
+            // HTTP POST
+            //https://sites.google.com/site/wcfpandu/web-api/calling-a-web-api-from-c-and-calling-a-web-api-from-view
+            using (var client = new HttpClient())
+            {
+                client.BaseAddress = new Uri(ConfigurationManager.AppSettings["url-api-client"]);
+                client.DefaultRequestHeaders.Accept.Clear();
+                client.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue("application/json"));
+                // HTTP POST
+                HttpResponseMessage response = await client.PostAsJsonAsync("api/Autentication/Login", user);
+                if (response.IsSuccessStatusCode)
+                {
+                    userAutentication = await response.Content.ReadAsAsync<ResultAutentication>();
+                    TOKEN = userAutentication.Token;
+                    status = userAutentication.StatusLogin;
+                }
+                else
+                {
+                    //TODO - COLOCAR TRATAMENTO CASO D++
+                    ModelState.AddModelError("", "Erro ao tentar efetuar o login");
+                    return View(model);
+                }
             }
 
             // This doesn't count login failures towards account lockout
             // To enable password failures to trigger account lockout, change to shouldLockout: true
-            var result = await SignInManager.PasswordSignInAsync(model.Email, model.Password, model.RememberMe, shouldLockout: false);
-            switch (result)
+            //var result = await SignInManager.PasswordSignInAsync(model.Email, model.Password, model.RememberMe, shouldLockout: false);
+            switch (status)
             {
-                case SignInStatus.Success:
-                    return RedirectToLocal(returnUrl);
-                case SignInStatus.LockedOut:
+                case StatusLogin.Success:
+                    FormsAuthentication.SetAuthCookie(userAutentication.User.UserName, true);
+                    //return RedirectToLocal(returnUrl);
+                    //return RedirectToLocal("/");
+                    return RedirectToAction("Index", "Home");
+                //return RedirectToAction("Index", "Manage");
+                case StatusLogin.LockedOut:
                     return View("Lockout");
-                case SignInStatus.RequiresVerification:
+                case StatusLogin.RequiresVerification:
                     return RedirectToAction("SendCode", new { ReturnUrl = returnUrl, RememberMe = model.RememberMe });
-                case SignInStatus.Failure:
+                case StatusLogin.Failure:
                 default:
                     ModelState.AddModelError("", "Invalid login attempt.");
                     return View(model);
@@ -333,55 +365,59 @@ namespace ClinicaPilotagemWeb.Controllers
         public async Task<ActionResult> ExternalLoginCallback(string returnUrl)
         {
             var loginInfo = await AuthenticationManager.GetExternalLoginInfoAsync();
+
             if (loginInfo == null)
-            {
                 return RedirectToAction("Login");
-            }
 
+            //Autenticação não liberada - retorna para a tela de login
+            if (!loginInfo.ExternalIdentity.IsAuthenticated)
+                return RedirectToAction("Login");
+
+            //Controla status da pré validação do usuário
             StatusLogin status = StatusLogin.Failure;
+            ResultAutentication userAutentication = null;
 
-            if (loginInfo.ExternalIdentity.IsAuthenticated)
+            var user = new
             {
-                var user = new
+                UserName = loginInfo.ExternalIdentity.Name,
+                Aplication = APLICATION,
+                Providers = new[]
                 {
-                    UserName = loginInfo.ExternalIdentity.Name,
-                    Aplication = APLICATION,
-                    Providers = new[]
+                    new
                     {
-                        new
-                        {
-                            Login = loginInfo.Login.LoginProvider,
-                            Key = loginInfo.Login.ProviderKey
-                        }
-                    }
-                };
-                
-                // HTTP POST
-                //https://sites.google.com/site/wcfpandu/web-api/calling-a-web-api-from-c-and-calling-a-web-api-from-view
-                using (var client = new HttpClient())
-                {
-                    client.BaseAddress = new Uri(ConfigurationManager.AppSettings["url-api-client"]);
-                    client.DefaultRequestHeaders.Accept.Clear();
-                    client.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue("application/json"));
-                    // HTTP POST
-                    HttpResponseMessage response = await client.PostAsJsonAsync("api/Autentication/LoginExternalAuthentication", user);
-                    if (response.IsSuccessStatusCode)
-                    {
-                        ResultAutentication userAutentication = await response.Content.ReadAsAsync<ResultAutentication>();
-                        //TODO - TRATA VALOR DO RETORNO
-                        status = userAutentication.StatusLogin;
+                        Login = loginInfo.Login.LoginProvider,
+                        Key = loginInfo.Login.ProviderKey
                     }
                 }
-            }
-            //TODO - TRATAR ELSE
+            };
 
-            // Sign in the user with this external login provider if the user already has a login
-            //var result = await SignInManager.ExternalSignInAsync(loginInfo, isPersistent: false);
+            // HTTP POST
+            //https://sites.google.com/site/wcfpandu/web-api/calling-a-web-api-from-c-and-calling-a-web-api-from-view
+            using (var client = new HttpClient())
+            {
+                client.BaseAddress = new Uri(ConfigurationManager.AppSettings["url-api-client"]);
+                client.DefaultRequestHeaders.Accept.Clear();
+                client.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue("application/json"));
+                // HTTP POST
+                HttpResponseMessage response = await client.PostAsJsonAsync("api/Autentication/LoginExternalAuthentication", user);
+                if (response.IsSuccessStatusCode)
+                {
+                    userAutentication = await response.Content.ReadAsAsync<ResultAutentication>();
+                    TOKEN = userAutentication.Token;
+                    status = userAutentication.StatusLogin;
+                }
+                else
+                {
+                    //TODO - TRATAR FALHA NA COMUNIÇÃO - APRESENTAR PROBLEMA
+                    return RedirectToAction("Login");
+                }
+            }
 
             switch (status)
             {
-                //TODO - VALIDAR SITUAÇÕES
                 case StatusLogin.Success:
+                    //TODO - REGISTRAR O USUÁRIO NA SESSÃO
+                    FormsAuthentication.SetAuthCookie(userAutentication.User.UserName, true);
                     return RedirectToLocal(returnUrl);
                 case StatusLogin.LockedOut:
                     return View("Lockout");
@@ -404,23 +440,26 @@ namespace ClinicaPilotagemWeb.Controllers
         public async Task<ActionResult> ExternalLoginConfirmation(ExternalLoginConfirmationViewModel model, string returnUrl)
         {
             if (User.Identity.IsAuthenticated)
-            {
                 return RedirectToAction("Index", "Manage");
-            }
+
+            StatusLogin status = StatusLogin.Failure;
 
             if (ModelState.IsValid)
             {
                 // Get the information about the user from the external login provider
                 var info = await AuthenticationManager.GetExternalLoginInfoAsync();
-                if (info == null)
-                {
-                    return View("ExternalLoginFailure");
-                }
-                //TODO - VER NECESSIDADE
-                var user = new UserModel { UserName = info.ExternalIdentity.Name, Email = model.Email };
 
-                var userLink = new { Email = model.Email,
-                    Aplication = APLICATION, 
+                if (info == null)
+                    return View("ExternalLoginFailure");
+
+                //TODO - VER NECESSIDADE
+                //var user = new UserModel { UserName = info.ExternalIdentity.Name, Email = model.Email };
+
+                var userLink = new
+                {
+                    Email = model.Email,
+                    Aplication = APLICATION,
+                    Name = info.ExternalIdentity.Name,
                     Provider = new
                     {
                         Login = info.Login.LoginProvider,
@@ -440,6 +479,8 @@ namespace ClinicaPilotagemWeb.Controllers
                     if (response.IsSuccessStatusCode)
                     {
                         ResultAutentication userAutentication = await response.Content.ReadAsAsync<ResultAutentication>();
+                        TOKEN = userAutentication.Token;
+                        status = userAutentication.StatusLogin;
                         //TODO - TRATA VALOR DO RETORNO
                         //status = userAutentication.StatusLogin;
                         //TODO - REGISTRAR USUÁRIO COMO LOGADO
@@ -447,21 +488,26 @@ namespace ClinicaPilotagemWeb.Controllers
                         //retornar para tela de registro solicitando a confirmação do registro pelo e-mail
                         ViewBag.CadastradoSucesso = "Confirmar o cadastro via e-mail.";
                     }
-                }
-
-
-                //TODO - COLOCAR USUÁRIO COMO NA SESSÃO E ENVIAR PARA A TELA DE LOGADO
-                var result = await UserManager.CreateAsync(user);
-                if (result.Succeeded)
-                {
-                    result = await UserManager.AddLoginAsync(user.Id, info.Login);
-                    if (result.Succeeded)
+                    else
                     {
-                        await SignInManager.SignInAsync(user, isPersistent: false, rememberBrowser: false);
-                        return RedirectToLocal(returnUrl);
+                        //TODO - TRATAR MENSAGEM DE ERRO
+                        return View("ExternalLoginFailure");
                     }
                 }
-                AddErrors(result);
+
+                //TODO - COLOCAR USUÁRIO COMO NA SESSÃO E ENVIAR PARA A TELA DE LOGADO
+                //var result = await UserManager.CreateAsync(user);
+                if (status == StatusLogin.Success)
+                {
+                    //TODO - REGISTRAR USUÁRIO NA SESSÃO
+                    //result = await UserManager.AddLoginAsync(user.Id, info.Login);
+                    //if (result.Succeeded)
+                    //{
+                    //await SignInManager.SignInAsync(user, isPersistent: false, rememberBrowser: false);
+                    return RedirectToLocal(returnUrl);
+                    //}
+                }
+                //AddErrors(result);
             }
 
             ViewBag.ReturnUrl = returnUrl;
