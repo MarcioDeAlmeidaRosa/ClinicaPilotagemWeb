@@ -44,10 +44,5 @@ namespace ClinicaPilotagemWeb.Controllers
 
             return base.BeginExecuteCore(callback, state);
         }
-
-        public ActionResult CurrentCulture()
-        {
-            return Json(System.Threading.Thread.CurrentThread.CurrentUICulture.ToString(), JsonRequestBehavior.AllowGet);
-        }
     }
 }

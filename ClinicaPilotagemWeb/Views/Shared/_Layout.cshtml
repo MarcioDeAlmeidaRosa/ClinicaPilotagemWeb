@@ -22,5 +22,14 @@
     @Scripts.Render("~/bundles/jquery")
     @Scripts.Render("~/bundles/bootstrap")
     @RenderSection("scripts", required: false)
+    <script>
+        $(document).ready(function () {
+            //Ask ASP.NET what culture we prefer
+            $.getJSON('/locale/currentculture', function (data) {
+                //Tell jQuery to figure it out also on the client side.
+                $.global.preferCulture(data);
+            });
+        });
+    </script>
 </body>
 </html>
