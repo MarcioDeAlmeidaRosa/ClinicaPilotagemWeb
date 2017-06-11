@@ -18,20 +18,21 @@
             <li>@Html.ActionLink(Language.Contact, "Contact", "Home")</li>
         </ul>
         <p class="navbar-text pull-right">
-            @if (Session["UsuarioLogado"] != null)
+            @if (!string.IsNullOrWhiteSpace(HttpContext.Current.User.Identity.Name))
             {
-                @Language.WellCome
-                @Session["UsuarioLogado"]
-                @Html.ActionLink(Language.SignOut, "Logout", "Autentication")
+                @Language.WellCome@:&nbsp;
+                @HttpContext.Current.User.Identity.Name@:&nbsp;
+                @Html.ActionLink(Language.SignOut, "Logout", "Authentication")
             }
-            else {
+            else
+            {
                 @Language.WellCome@:&nbsp;
                 @Language.Visitor@:&nbsp;
-                @Html.ActionLink(Language.SignIn, "Login", "Autentication")
+                @Html.ActionLink(Language.SignIn, "Login", "Authentication")
                 @:&nbsp;
                 @Language.Or
                 @:&nbsp;
-                @Html.ActionLink(Language.SignUp, "Register", "Autentication")
+                @Html.ActionLink(Language.SignUp, "Register", "Authentication")
             }
         </p>
     </div>

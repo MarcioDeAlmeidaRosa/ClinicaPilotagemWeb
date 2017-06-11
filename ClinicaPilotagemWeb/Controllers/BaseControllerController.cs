@@ -13,6 +13,8 @@ namespace ClinicaPilotagemWeb.Controllers
         protected static string ContactEmailMarketing;
         protected static string ContactEnderecoLinha1;
         protected static string ContactEnderecoLinha2;
+        protected string cultureName;
+        protected string TOKEN;
 
         static BaseControllerController()
         {
@@ -25,7 +27,7 @@ namespace ClinicaPilotagemWeb.Controllers
 
         protected override IAsyncResult BeginExecuteCore(AsyncCallback callback, object state)
         {
-            string cultureName = RouteData.Values["culture"] as string;
+            cultureName = RouteData.Values["culture"] as string;
 
             if (cultureName == null)
                 cultureName = Request.UserLanguages != null && Request.UserLanguages.Length > 0 ? Request.UserLanguages[0] : null; // obtain it from HTTP header AcceptLanguages

@@ -1,4 +1,4 @@
-﻿@model ClinicaPilotagemWeb.Models.User
+﻿@model ClinicaPilotagemWeb.Models.UserModel
 @using ClinicaPilotagemWeb.Resources
 @{
     ViewBag.Title = "Login";
@@ -8,8 +8,9 @@
 <div class="row">
     <div class="col-md-6 col-lg-6 col-sm-6">
         <fieldset>
-            @using (Html.BeginForm("Login", "Autentication", FormMethod.Post))
+            @using (Html.BeginForm("Login", "Authentication", FormMethod.Post))
             {
+                @Html.AntiForgeryToken()
                 <div class="row">
                     @Html.LabelFor(m => m.Email)
                     @Html.TextBoxFor(m => m.Email, new { @class = "form-control", @required = "required", @placeholder = Language.EnterYourEmail, @alt = Language.EnterYourEmail, @title = Language.EnterYourEmail })
@@ -21,6 +22,9 @@
                     @Html.PasswordFor(m => m.Password, new { @class = "form-control", @required = "required", @placeholder = Language.EnterYourPassword, @alt = Language.EnterYourPassword, @title = Language.EnterYourPassword })
                     @Html.ValidationMessageFor(m => m.Password, "", new { @class = "text-errer" })
                 </div>
+                <br />
+                @Html.ValidationMessage("authentication", new { @class= "alert alert-danger",  @role = "alert" })
+
                 <br />
                 <div class="row">
                     <input type="submit" value="@Language.SignIn" class="bottom" />

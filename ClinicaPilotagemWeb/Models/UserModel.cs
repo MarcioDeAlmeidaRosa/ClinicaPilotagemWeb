@@ -3,7 +3,7 @@ using System.ComponentModel.DataAnnotations;
 
 namespace ClinicaPilotagemWeb.Models
 {
-    public class User
+    public class UserModel
     {
         [Display(Name = "Email", ResourceType = typeof(Resources.Language))]
         [Required(ErrorMessageResourceType = typeof(Resources.Language),

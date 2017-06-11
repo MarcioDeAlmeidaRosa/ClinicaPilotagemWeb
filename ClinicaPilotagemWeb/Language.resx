@@ -195,4 +195,16 @@
   <data name="SignUp" xml:space="preserve">
     <value>Inscrever-se</value>
   </data>
+  <data name="UserNotFound" xml:space="preserve">
+    <value>Usuário não encontrado</value>
+  </data>
+  <data name="ErrorTryLogIn" xml:space="preserve">
+    <value>Erro ao tentar efetuar o login</value>
+  </data>
+  <data name="UserConfirm" xml:space="preserve">
+    <value>Favor, acessar seu e-mail e ocnfirmar o cadastro do usuário</value>
+  </data>
+  <data name="UserIsBlocked" xml:space="preserve">
+    <value>Usuário está bloqueado</value>
+  </data>
 </root>

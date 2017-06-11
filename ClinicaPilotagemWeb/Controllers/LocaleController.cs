@@ -1,5 +1,4 @@
-﻿using System.Threading;
-using System.Web.Mvc;
+﻿using System.Web.Mvc;
 
 namespace ClinicaPilotagemWeb.Controllers
 {
@@ -7,7 +6,7 @@ namespace ClinicaPilotagemWeb.Controllers
     {
         public ActionResult CurrentCulture()
         {
-            return Json(/*Thread.CurrentThread.CurrentUICulture.ToString()*/"pt-BR", JsonRequestBehavior.AllowGet);
+            return Json(cultureName, JsonRequestBehavior.AllowGet);
         }
     }
 }

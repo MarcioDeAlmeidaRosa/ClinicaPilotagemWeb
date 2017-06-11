@@ -115,6 +115,15 @@ namespace ClinicaPilotagemWeb.Resources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Erro ao tentar efetuar o login.
+        /// </summary>
+        public static string ErrorTryLogIn {
+            get {
+                return ResourceManager.GetString("ErrorTryLogIn", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Ocorreu um erro durante o processamento do seu request.
         /// </summary>
         public static string GenerecErrorMessage {
@@ -246,6 +255,33 @@ namespace ClinicaPilotagemWeb.Resources {
         public static string Support {
             get {
                 return ResourceManager.GetString("Support", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Favor, acessar seu e-mail e ocnfirmar o cadastro do usuário.
+        /// </summary>
+        public static string UserConfirm {
+            get {
+                return ResourceManager.GetString("UserConfirm", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Usuário está bloqueado.
+        /// </summary>
+        public static string UserIsBlocked {
+            get {
+                return ResourceManager.GetString("UserIsBlocked", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Usuário não encontrado.
+        /// </summary>
+        public static string UserNotFound {
+            get {
+                return ResourceManager.GetString("UserNotFound", resourceCulture);
             }
         }
         
