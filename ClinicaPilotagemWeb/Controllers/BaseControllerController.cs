@@ -1,13 +1,19 @@
-﻿using ClinicaPilotagemWeb.Helper;
-using System;
+﻿using System;
 using System.Configuration;
 using System.Threading;
+using System.Web;
 using System.Web.Mvc;
+using System.Web.Security;
+using ClinicaPilotagemWeb.Helper;
+using ClinicaPilotagemWeb.Models;
+using ClinicaPilotagemWeb.Models.Responses.Authentication;
 
 namespace ClinicaPilotagemWeb.Controllers
 {
     public abstract class BaseControllerController : Controller
     {
+        protected const int APLICATION = 1;/*app clinica de pilotagem*/
+
         protected static string ContactFoneNumber;
         protected static string ContactEmailSupport;
         protected static string ContactEmailMarketing;
@@ -45,6 +51,20 @@ namespace ClinicaPilotagemWeb.Controllers
             Thread.CurrentThread.CurrentUICulture = Thread.CurrentThread.CurrentCulture;
 
             return base.BeginExecuteCore(callback, state);
+        }
+
+        protected void SetAuthCookie(UserModel model, ResultAutentication userAuthentication)
+        {
+            FormsAuthentication.SetAuthCookie(model.Email, false);
+            var authTicket = new FormsAuthenticationTicket(1, userAuthentication.User.UserName, DateTime.Now, DateTime.Now.AddMinutes(20), false, Convert.ToString(APLICATION));
+            string encryptedTicket = FormsAuthentication.Encrypt(authTicket);
+            var authCookie = new HttpCookie(FormsAuthentication.FormsCookieName, encryptedTicket);
+            HttpContext.Response.Cookies.Add(authCookie);
+        }
+
+        protected void Logout()
+        {
+            FormsAuthentication.SignOut();
         }
     }
 }

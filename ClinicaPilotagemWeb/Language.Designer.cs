@@ -151,6 +151,15 @@ namespace ClinicaPilotagemWeb.Resources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Entrar.
+        /// </summary>
+        public static string GetIn {
+            get {
+                return ResourceManager.GetString("GetIn", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Página Inicial.
         /// </summary>
         public static string Home {

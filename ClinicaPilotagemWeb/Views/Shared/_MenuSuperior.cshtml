@@ -22,6 +22,7 @@
             {
                 @Language.WellCome@:&nbsp;
                 @HttpContext.Current.User.Identity.Name@:&nbsp;
+                @Html.ActionLink(Language.GetIn, "GetIn", "Authentication")@:&nbsp;
                 @Html.ActionLink(Language.SignOut, "Logout", "Authentication")
             }
             else

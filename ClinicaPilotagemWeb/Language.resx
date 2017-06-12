@@ -216,4 +216,7 @@
   <data name="SuccessRegister" xml:space="preserve">
     <value>Registro efetuado com sucesso, por favor, acesse seu e-mail para confirmar o cadastro</value>
   </data>
+  <data name="GetIn" xml:space="preserve">
+    <value>Entrar</value>
+  </data>
 </root>

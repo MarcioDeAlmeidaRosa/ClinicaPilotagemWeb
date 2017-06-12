@@ -1,30 +1,29 @@
 ﻿using System;
-using System.Web;
 using System.Web.Mvc;
 using System.Net.Http;
-using System.Web.Security;
 using System.Threading.Tasks;
 using System.Net.Http.Headers;
 using System.Configuration;
 using ClinicaPilotagemWeb.Models;
 using ClinicaPilotagemWeb.Models.Responses.Authentication;
-using System.IO;
-using System.Net.Http.Formatting;
-using System.Net;
 
 namespace ClinicaPilotagemWeb.Controllers
 {
     public class AuthenticationController : BaseControllerController
     {
-        private const int APLICATION = 1;/*app clinica de pilotagem*/
-
         [HttpGet]
         //[AllowAnonymous]
         public ActionResult Logout()
         {
-            //TODO - EFETUAR LOGOUT E ENCAMINHA PARA A TELA INICIAL
-            FormsAuthentication.SignOut();
+            base.Logout();
             return RedirectToAction("Index", "Home");
+        }
+
+        [HttpGet]
+        //[AllowAnonymous]
+        public ActionResult GetIn()
+        {
+            return RedirectToAction("Index", "Main");
         }
 
         [HttpGet]
@@ -70,11 +69,9 @@ namespace ClinicaPilotagemWeb.Controllers
                 TOKEN = userAuthentication.Token;
             }
 
-            FormsAuthentication.SetAuthCookie(model.Email, false);
-            var authTicket = new FormsAuthenticationTicket(1, userAuthentication.User.UserName, DateTime.Now, DateTime.Now.AddMinutes(20), false, Convert.ToString(user.Aplication));
-            string encryptedTicket = FormsAuthentication.Encrypt(authTicket);
-            var authCookie = new HttpCookie(FormsAuthentication.FormsCookieName, encryptedTicket);
-            HttpContext.Response.Cookies.Add(authCookie);
+            //Set usuário logado
+            SetAuthCookie(model, userAuthentication);
+
             return RedirectToAction("Index", "Main");
         }
 

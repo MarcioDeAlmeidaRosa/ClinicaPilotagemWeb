@@ -216,4 +216,7 @@
   <data name="SuccessRegister" xml:space="preserve">
     <value>Registration successful, please access your email to confirm registration</value>
   </data>
+  <data name="GetIn" xml:space="preserve">
+    <value>Get in</value>
+  </data>
 </root>
