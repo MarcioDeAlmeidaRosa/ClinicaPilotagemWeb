@@ -97,6 +97,15 @@ namespace ClinicaPilotagemWeb.Resources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Informe o seu nome.
+        /// </summary>
+        public static string EnterYourName {
+            get {
+                return ResourceManager.GetString("EnterYourName", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Informe sua senha.
         /// </summary>
         public static string EnterYourPassword {
@@ -120,6 +129,15 @@ namespace ClinicaPilotagemWeb.Resources {
         public static string ErrorTryLogIn {
             get {
                 return ResourceManager.GetString("ErrorTryLogIn", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Erro ao tentar registrar.
+        /// </summary>
+        public static string ErrorTryRegister {
+            get {
+                return ResourceManager.GetString("ErrorTryRegister", resourceCulture);
             }
         }
         
@@ -250,6 +268,15 @@ namespace ClinicaPilotagemWeb.Resources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Registro efetuado com sucesso, por favor, acesse seu e-mail para confirmar o cadastro.
+        /// </summary>
+        public static string SuccessRegister {
+            get {
+                return ResourceManager.GetString("SuccessRegister", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Suporte.
         /// </summary>
         public static string Support {
@@ -259,7 +286,7 @@ namespace ClinicaPilotagemWeb.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Favor, acessar seu e-mail e ocnfirmar o cadastro do usuário.
+        ///   Looks up a localized string similar to Por favor, acessar seu e-mail e confirmar o cadastro do usuário.
         /// </summary>
         public static string UserConfirm {
             get {

@@ -202,9 +202,18 @@
     <value>Erro ao tentar efetuar o login</value>
   </data>
   <data name="UserConfirm" xml:space="preserve">
-    <value>Favor, acessar seu e-mail e ocnfirmar o cadastro do usuário</value>
+    <value>Por favor, acessar seu e-mail e confirmar o cadastro do usuário</value>
   </data>
   <data name="UserIsBlocked" xml:space="preserve">
     <value>Usuário está bloqueado</value>
+  </data>
+  <data name="EnterYourName" xml:space="preserve">
+    <value>Informe o seu nome</value>
+  </data>
+  <data name="ErrorTryRegister" xml:space="preserve">
+    <value>Erro ao tentar registrar</value>
+  </data>
+  <data name="SuccessRegister" xml:space="preserve">
+    <value>Registro efetuado com sucesso, por favor, acesse seu e-mail para confirmar o cadastro</value>
   </data>
 </root>

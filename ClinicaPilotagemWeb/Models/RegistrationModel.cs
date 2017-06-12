@@ -2,8 +2,13 @@
 
 namespace ClinicaPilotagemWeb.Models
 {
-    public class UserModel
+    public class RegistrationModel
     {
+        [Display(Name = "Name", ResourceType = typeof(Resources.Language))]
+        [Required(ErrorMessageResourceType = typeof(Resources.Language),
+            ErrorMessageResourceName = "EnterYourName")]
+        public string Name { get; set; }
+
         [Display(Name = "Email", ResourceType = typeof(Resources.Language))]
         [Required(ErrorMessageResourceType = typeof(Resources.Language),
             ErrorMessageResourceName = "EnterYourEmail")]

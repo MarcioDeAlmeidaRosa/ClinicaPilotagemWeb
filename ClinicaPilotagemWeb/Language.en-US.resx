@@ -202,9 +202,18 @@
     <value>Error trying to log in</value>
   </data>
   <data name="UserConfirm" xml:space="preserve">
-    <value>Please, access your e-mail and confirm the user's registration</value>
+    <value>Please, access your email and confirm the user's registration</value>
   </data>
   <data name="UserIsBlocked" xml:space="preserve">
     <value>User is locked</value>
+  </data>
+  <data name="EnterYourName" xml:space="preserve">
+    <value>Enter your name</value>
+  </data>
+  <data name="ErrorTryRegister" xml:space="preserve">
+    <value>Error while trying to register</value>
+  </data>
+  <data name="SuccessRegister" xml:space="preserve">
+    <value>Registration successful, please access your email to confirm registration</value>
   </data>
 </root>
